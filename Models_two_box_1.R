@@ -27,35 +27,66 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
       return(NA)
     }
   })
-  
-  C_F0 <- (G * (1 - epsilon_L)) / (Q + Q_L) * (1 - exp((-(Q + Q_L) * t_g) / V))
-  
-  C_decay <- sapply(time_vector, function(t) {
-    if (t > t_g) {
-      return(C0 * exp((-(Q + Q_L) * (t - t_g)) / V))
+
+   C_N_rise <- sapply(time_vector, function(t) {
+    if (t <= t_g) {
+      return(
+        C_F + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+        exp(lambda_1 * t) - G * 
+        ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
+        exp(lambda_2 * t)
+      )
     } else {
       return(NA)
     }
   })
   
-  return(list(time = time_vector, concentration_rise = C_rise, concentration_decay = C_decay))
+  
+  C_F0 <-  C_F + G * ((lambda_1 * V_N + beta) / beta) * 
+           ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+           exp(lambda_1 * t_g) - G * ((lambda_2 * V_N + beta) / beta) *
+           ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
+           exp(lambda_2 * t_g)
+
+  C_N0 <- C_F + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+          exp(lambda_1 * t) - G * 
+          ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
+          exp(lambda_2 * t)
+  
+  C_F_decay <- sapply(time_vector, function(t) {
+    if (t > t_g) {
+      return(
+        (((lambda_1 * V_N + beta) * (beta * (C_F0 - C_N0) - (lambda_2 * V_N * C_N0)))
+        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * t) +
+        (((lambda_2 * V_N + beta) * (beta * (C_F0 - C_N0) - (lambda_1 * V_N * C_N0)))
+        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * t)
+      )
+    } else {
+      return(NA)
+    }
+  })
+
+  C_N_decay <- sapply(time_vector, function(t) {
+    if (t > t_g) {
+      return(
+        (((beta * (C_F0 - C_N0) - (lambda_2 * V_N * C_N0)))
+        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * t) +
+        (((beta * (C_F0 - C_N0) - (lambda_1 * V_N * C_N0)))
+        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * t)
+      )
+    } else {
+      return(NA)
+    }
+  })
+  
+  return(list(time = time_vector, concentration_F_rise = C_F_rise, concentration_N_rise = C_N_rise, 
+              concentration_F_decay = C_F_decay, concentration_N_decay = C_N_decay))
 }
 
 
 
 
-# Model 201 equations for concentration rise (G > 0)
-C_F_t <- function(t) {
-  C_F + G * ((lambda_1 * V_N + beta) / beta) * 
-  ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
-  exp(lambda_1 * t) - G * ((lambda_2 * V_N + beta) / beta) *
-  ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
-  exp(lambda_2 * t)
-}
 
-C_N_t <- function(t) {
-  C_N + G * (beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2)) * exp(lambda_1 * t) - G * (lambda_2 * V_N + beta) / beta * exp(lambda_2 * t)
-}
 
 # Model 201 equations for concentration decay (G = 0)
 C_F_t_decay <- function(t) {
@@ -81,8 +112,8 @@ C_N_t_decay <- function(t) {
 
 
 # Define the model parameters with units
-td <- 60    # minutes
-tg <- 15    # minutes
+t <- 60    # minutes
+t_g <- 15    # minutes
 G <- 100    # mg/min
 Q <- 20     # m^3/min
 QL <- 5     # m^3/min
