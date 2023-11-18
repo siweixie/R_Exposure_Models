@@ -61,7 +61,7 @@ results_107_df <- data.frame(Time = results_107$time,
 results_107_df <- results_107_df[!is.na(results_107_df$Concentration), ]
 
 
-# Comparison of model 101 and model 103:
+# Comparison of model 105 and model 107:
 
 combined_data <- rbind(results_105_df, results_107_df)
 ggplot(combined_data, aes(x = Time, y = Concentration, color = Model)) +
@@ -70,3 +70,17 @@ ggplot(combined_data, aes(x = Time, y = Concentration, color = Model)) +
        x = "Time (minutes)", 
        y = "Concentration (mg/m^3)") +
   theme_minimal()
+
+
+# Further check the significance of difference
+mse <- mean((results_105_df$Concentration - results_107_df$Concentration)^2)
+r2 <- cor(results_105_df$Concentration, results_107_df$Concentration)^2
+mse
+r2
+
+# Normality test
+shapiro.test(results_105_df$Concentration)
+shapiro.test(results_107_df$Concentration)
+
+# If it is not normal distribution (p<0.05), using wilcox.test
+wilcox.test(results_105_df$Concentration, results_107_df$Concentration)
