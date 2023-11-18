@@ -6,7 +6,7 @@ model_200 <- function(G, Q, beta, gamma) {
 }
 
 # Define model 201
-model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
+model_201 <- function(G, Q, V, V_N, beta, t_g, t) {
   # Create a time vector
   time_vector <- seq(0, T, by = 1)
 
@@ -98,7 +98,7 @@ beta <- 5   # Near-field ventilation rate in m^3/min
 gamma <- 0.25
 
 results_200 <- model_200(G, Q, beta, gamma)
-results_201 <- model_107(G, Q, V, V_N, beta, t_g, T)
+results_201 <- model_107(G, Q, V, V_N, beta, t_g, t)
 
 results_201_df <- data.frame(Time = results_201$time, 
                              Concentration = c(results_201$concentration_F_rise, 
