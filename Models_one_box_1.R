@@ -153,3 +153,11 @@ r2 <- cor(results_101_df$Concentration, results_103_df$Concentration)^2
 mse
 r2
 
+# Normality test
+shapiro.test(results_101_df$Concentration)
+shapiro.test(results_103_df$Concentration)
+
+# If it is not normal distribution (p<0.05), using wilcox.test
+wilcox.test(results_101_df$Concentration, results_103_df$Concentration)
+
+
