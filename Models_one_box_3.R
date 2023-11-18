@@ -20,7 +20,7 @@ model_109 <- function(G, Q, Q_L, epsilon_L, epsilon_L_F, V, t_g, T) {
     }
   })
   
-  C0 <- ((G * (1 - epsilon_L * epsilon_L_F)) / (Q + epsilon_L_F * Q_L)) * (1 - exp((-(Q + epsilon_L_F * Q_L) * t) / V))
+  C0 <- ((G * (1 - epsilon_L * epsilon_L_F)) / (Q + epsilon_L_F * Q_L)) * (1 - exp((-(Q + epsilon_L_F * Q_L) * t_g) / V))
   
   C_decay <- sapply(time_vector, function(t) {
     if (t > t_g) {
