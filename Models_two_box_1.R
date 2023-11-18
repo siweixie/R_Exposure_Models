@@ -100,6 +100,8 @@ beta <- 5   # Near-field ventilation rate in m^3/min
 gamma <- 0.25
 
 results_200 <- model_200(G, Q, beta, gamma)
+C_F <- gamma * G / Q # Far field
+C_N <- C_F + ((gamma * G) / beta) # Near field
 results_201 <- model_201(G, Q, V, V_N, beta, t_g, t)
 
 results_201_df <- data.frame(Time = results_201$time, 
