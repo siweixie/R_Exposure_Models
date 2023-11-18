@@ -47,6 +47,18 @@ model_107 <- function(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, V, t_g, T) {
   return(model_105(G, Q_instead, Q_L, epsilon_L, V, t_g, T))
 }
 
+T <- 60   # Total time (minutes)
+t_g <- 15 # Time of generation (minutes)
+G <- 100  # mg/min
+Q <- 20   # m^3/min
+Q_L <- 5  # m^3/min
+epsilon_L <- 0.5  # Efficiency of local exhaust
+epsilon_L_F <- 0.75  # Efficiency of local exhaust filtration
+Q_R <- 5  # m^3/min
+epsilon_RF <- 0.9  # Efficiency of recirculation filtration
+V <- 100  # m^3
+gamma <- 0.25 
+
 
 results_104 <- model_104(G, Q, Q_L, epsilon_L, gamma)
 results_105 <- model_105(G, Q, Q_L, epsilon_L, V, t_g, T)
