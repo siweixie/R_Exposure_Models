@@ -11,8 +11,10 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, t) {
   time_vector <- seq(0, t, by = 1)
 
   # Lambda calculations
-  lambda_1 <- 0.5 * (-(beta * V_F + V_N * (beta + Q)) / (V_N * V_F)) + sqrt(((beta * V_F + V_N * (beta + Q)) / (V_N * V_F))^2 - 4 * ((beta * Q) / (V_N * V_F)))
-  lambda_2 <- 0.5 * (-(beta * V_F + V_N * (beta + Q)) / (V_N * V_F)) - sqrt(((beta * V_F + V_N * (beta + Q)) / (V_N * V_F))^2 - 4 * ((beta * Q) / (V_N * V_F)))
+  lambda_1 <- 0.5 * (-(beta * V + V_N * (beta + Q)) / (V_N * V)) + 
+            sqrt(((beta * V + V_N * (beta + Q)) / (V_N * V))^2 - 4 * ((beta * Q) / (V_N * V)))
+  lambda_2 <- 0.5 * (-(beta * V + V_N * (beta + Q)) / (V_N * V)) - 
+            sqrt(((beta * V + V_N * (beta + Q)) / (V_N * V))^2 - 4 * ((beta * Q) / (V_N * V)))
   
   C_F_rise <- sapply(time_vector, function(t) {
     if (t <= t_g) {
@@ -98,7 +100,7 @@ beta <- 5   # Near-field ventilation rate in m^3/min
 gamma <- 0.25
 
 results_200 <- model_200(G, Q, beta, gamma)
-results_201 <- model_107(G, Q, V, V_N, beta, t_g, t)
+results_201 <- model_201(G, Q, V, V_N, beta, t_g, t)
 
 results_201_df <- data.frame(Time = results_201$time, 
                              Concentration = c(results_201$concentration_F_rise, 
