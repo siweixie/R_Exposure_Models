@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import shapiro, wilcoxon
+from scipy.stats import shapiro, wilcoxon 
 
 # Define Model 100 with the gamma factor
 def model_100(G, Q, gamma):
