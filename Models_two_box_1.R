@@ -16,13 +16,19 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
   
   C_F_rise <- sapply(time_vector, function(t) {
     if (t <= t_g) {
-      return(((G * (1 - epsilon_L)) / (Q + Q_L)) * (1 - exp((-(Q + Q_L) * t) / V)))
+      return(
+        C_F + G * ((lambda_1 * V_N + beta) / beta) * 
+        ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+        exp(lambda_1 * t) - G * ((lambda_2 * V_N + beta) / beta) *
+        ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
+        exp(lambda_2 * t)
+      )
     } else {
       return(NA)
     }
   })
   
-  C0 <- (G * (1 - epsilon_L)) / (Q + Q_L) * (1 - exp((-(Q + Q_L) * t_g) / V))
+  C_F0 <- (G * (1 - epsilon_L)) / (Q + Q_L) * (1 - exp((-(Q + Q_L) * t_g) / V))
   
   C_decay <- sapply(time_vector, function(t) {
     if (t > t_g) {
@@ -36,9 +42,15 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
 }
 
 
+
+
 # Model 201 equations for concentration rise (G > 0)
 C_F_t <- function(t) {
-  C_F + G * (lambda_1 * V_N + beta) / beta * (beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2)) * exp(lambda_1 * t) - G * (lambda_2 * V_N + beta) / beta * exp(lambda_2 * t)
+  C_F + G * ((lambda_1 * V_N + beta) / beta) * 
+  ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+  exp(lambda_1 * t) - G * ((lambda_2 * V_N + beta) / beta) *
+  ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
+  exp(lambda_2 * t)
 }
 
 C_N_t <- function(t) {
