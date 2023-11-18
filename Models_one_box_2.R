@@ -41,6 +41,7 @@ model_106 <- function(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, gamma) {
 }
 
 
+# Define Model 107
 model_107 <- function(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, V, t_g, T) {
   Q_instead <- Q + epsilon_RF * Q_R
   return(model_105(G, Q_instead, Q_L, epsilon_L, V, t_g, T))
