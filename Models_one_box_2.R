@@ -102,4 +102,4 @@ shapiro.test(results_105_df$Concentration)
 shapiro.test(results_107_df$Concentration)
 
 # If it is not normal distribution (p<0.05), using wilcox.test
-wilcox.test(results_105_df$Concentration, results_107_df$Concentration)
+wilcox.test(results_105_df$Concentration, results_107_df$Concentration, paired = TRUE)
