@@ -98,5 +98,25 @@ beta <- 5   # Near-field ventilation rate in m^3/min
 gamma <- 0.25
 
 results_200 <- model_200(G, Q, beta, gamma)
+results_201 <- model_107(G, Q, V, V_N, beta, t_g, T)
 
+results_201_df <- data.frame(Time = results_201$time, 
+                             Concentration = c(results_201$concentration_F_rise, 
+                                               results_201$concentration_N_rise,
+                                               results_201$concentration_F_decay,
+                                               results_201$concentration_N_decay
+                                              ),
+                                              Model = "Model 201")
+results_201_df <- results_201_df[!is.na(results_201_df$Concentration), ]
+
+
+# Comparison of model 105 and model 107:
+
+combined_data <- rbind(results_105_df, results_107_df)
+ggplot(combined_data, aes(x = Time, y = Concentration, color = Model)) +
+  geom_line() +
+  labs(title = "Model 105 vs Model 107",
+       x = "Time (minutes)", 
+       y = "Concentration (mg/m^3)") +
+  theme_minimal()
 
