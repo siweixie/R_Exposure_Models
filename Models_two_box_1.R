@@ -8,7 +8,7 @@ model_200 <- function(G, Q, beta, gamma) {
 # Define model 201
 model_201 <- function(G, Q, V, V_N, beta, t_g, t) {
   # Create a time vector
-  time_vector <- seq(0, T, by = 1)
+  time_vector <- seq(0, t, by = 1)
 
   # Lambda calculations
   lambda_1 <- 0.5 * (-(beta * V_F + V_N * (beta + Q)) / (V_N * V_F)) + sqrt(((beta * V_F + V_N * (beta + Q)) / (V_N * V_F))^2 - 4 * ((beta * Q) / (V_N * V_F)))
