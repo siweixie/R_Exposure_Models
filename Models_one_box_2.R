@@ -8,11 +8,12 @@ model_104 <- function(G, Q, Q_L, epsilon_L, gamma) {
 
 # Define Model 105
 model_105 <- function(G, Q, Q_L, epsilon_L, V, t_g, T) {
+  # Create a time vector
   time_vector <- seq(0, T, by = 1)
   
   C_rise <- sapply(time_vector, function(t) {
     if (t <= t_g) {
-      return((G * (1 - epsilon_L)) / (Q + Q_L) * (1 - exp((-(Q + Q_L) * t) / V)))
+      return(((G * (1 - epsilon_L)) / (Q + Q_L)) * (1 - exp((-(Q + Q_L) * t) / V)))
     } else {
       return(NA)
     }
