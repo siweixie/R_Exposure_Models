@@ -1,6 +1,9 @@
 # Define model 200
-C_F <- gamma * G / Q # Far field
-C_N <- C_F + ((gamma * G) / beta) # Near field
+model_200 <- function(G, Q, beta, gamma) {
+  C_F <- gamma * G / Q # Far field
+  C_N <- C_F + ((gamma * G) / beta) # Near field
+  return(list(C_F = C_F, C_N = C_N))
+}
 
 # Define model 201
 # Define Model 105
