@@ -47,6 +47,7 @@ model_107 <- function(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, V, t_g, T) {
   return(model_105(G, Q_instead, Q_L, epsilon_L, V, t_g, T))
 }
 
+
 T <- 60   # Total time (minutes)
 t_g <- 15 # Time of generation (minutes)
 G <- 100  # mg/min
