@@ -70,3 +70,53 @@ if normality_test_109.pvalue < 0.05 and normality_test_111.pvalue < 0.05:
     wilcoxon_test = wilcoxon(concentration_109[~np.isnan(concentration_109)], concentration_111[~np.isnan(concentration_111)])
     
 mse, r2, normality_test_109, normality_test_111, wilcoxon_test
+
+
+# Prepare Data for Plotting and Comparison
+# Convert all model results to DataFrame in a consistent format
+results_109_df = pd.DataFrame({
+    'Time': np.concatenate([time_109, time_109]),
+    'Concentration': np.concatenate([concentration_109, concentration_109]),
+    'Model': 'Model 109'
+}).dropna()
+
+results_111_df = pd.DataFrame({
+    'Time': np.concatenate([time_111, time_111]),
+    'Concentration': np.concatenate([concentration_111, concentration_111]),
+    'Model': 'Model 111'
+}).dropna()
+
+results_101_df = pd.DataFrame({
+    'Time': np.concatenate([time_101, time_101]),
+    'Concentration': np.concatenate([concentration_101, concentration_101]),
+    'Model': 'Model 101'
+}).dropna()
+
+results_103_df = pd.DataFrame({
+    'Time': np.concatenate([time_103, time_103]),
+    'Concentration': np.concatenate([concentration_103, concentration_103]),
+    'Model': 'Model 103'
+}).dropna()
+
+# Combine all data for visualization
+all_data_df = pd.concat([
+    results_101_df,
+    results_103_df,
+    results_105_df,
+    results_107_df,
+    results_109_df,
+    results_111_df
+])
+
+# Plotting all models
+plt.figure(figsize=(12, 6))
+for model in all_data_df['Model'].unique():
+    subset = all_data_df[all_data_df['Model'] == model]
+    plt.plot(subset['Time'], subset['Concentration'], label=model)
+plt.title('Overall Model Comparison')
+plt.xlabel('Time (minutes)')
+plt.ylabel('Concentration (mg/m^3)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
