@@ -105,3 +105,13 @@ shapiro.test(results_111_df$Concentration)
 
 # If it is not normal distribution (p<0.05), using wilcox.test
 wilcox.test(results_109_df$Concentration, results_111_df$Concentration)
+
+
+# Overall comparison
+combined_data <- rbind(results_101_df, results_103_df, results_105_df, results_107_df, results_109_df, results_111_df)
+ggplot(combined_data, aes(x = Time, y = Concentration, color = Model)) +
+    geom_line() +
+    labs(title = "Model difference",
+         x = "Time (minutes)", 
+         y = "Concentration (mg/m^3)") +
+    theme_minimal()
