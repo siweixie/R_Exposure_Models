@@ -16,6 +16,11 @@ def model_101(G, Q, V, t_g, T):
     C_combined = np.array([x if not np.isnan(x) else y for x, y in zip(C_rise, C_decay)])
     return time_vector, C_combined
 
+# Define Model 102
+def model_102(G, Q, Q_R, epsilon_RF, gamma):
+    C_bar = (gamma * G) / (Q + epsilon_RF * Q_R)
+    return C_bar
+
 # Define Model 103
 def model_103(G, Q, Q_R, epsilon_RF, V, t_g, T):
     Q_with_RF = Q + epsilon_RF * Q_R
