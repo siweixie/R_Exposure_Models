@@ -57,9 +57,9 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
     if (t > t_g) {
       return(
         (((lambda_1 * V_N + beta) * (beta * (C_F0 - C_N0) - (lambda_2 * V_N * C_N0)))
-        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * t) +
+        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * (t - t_g)) +
         (((lambda_2 * V_N + beta) * (beta * (C_F0 - C_N0) - (lambda_1 * V_N * C_N0)))
-        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * t)
+        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * (t - t_g))
       )
     } else {
       return(NA)
@@ -70,9 +70,9 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
     if (t > t_g) {
       return(
         (((beta * (C_F0 - C_N0) - (lambda_2 * V_N * C_N0)))
-        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * t) +
+        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * (t - t_g)) +
         (((beta * (C_F0 - C_N0) - (lambda_1 * V_N * C_N0)))
-        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * t)
+        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * (t - t_g))
       )
     } else {
       return(NA)
@@ -82,34 +82,6 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
   return(list(time = time_vector, concentration_F_rise = C_F_rise, concentration_N_rise = C_N_rise, 
               concentration_F_decay = C_F_decay, concentration_N_decay = C_N_decay))
 }
-
-
-
-
-
-
-# Model 201 equations for concentration decay (G = 0)
-C_F_t_decay <- function(t) {
-  (lambda_1 * V_N + beta) / (beta * V_N * (lambda_1 - lambda_2)) * (beta * (C_F0 - C_N0) - lambda_2 * V_N * C_N0) * exp(lambda_1 * t) + 
-  (lambda_2 * V_N + beta) / (beta * V_N * (lambda_1 - lambda_2)) * (beta * (C_N0 - C_F0) - lambda_1 * V_N * C_N0) * exp(lambda_2 * t)
-}
-
-C_N_t_decay <- function(t) {
-  (beta * (C_F0 - C_N0) - lambda_2 * V_N * C_N0) / (V_N * (lambda_1 - lambda_2)) * exp(lambda_1 * t) + 
-  (beta * (C_N0 - C_F0) - lambda_1 * V_N * C_N0) / (V_N * (lambda_1 - lambda_2)) * exp(lambda_2 * t)
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Define the model parameters with units
 t <- 60    # minutes
@@ -126,4 +98,5 @@ beta <- 5   # Near-field ventilation rate in m^3/min
 gamma <- 0.25
 
 results_200 <- model_200(G, Q, beta, gamma)
+
 
