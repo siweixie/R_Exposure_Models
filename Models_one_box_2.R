@@ -70,13 +70,13 @@ results_107 <- model_107(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, V, t_g, T)
 results_105_df <- data.frame(Time = results_105$time, 
                              Concentration = c(results_105$concentration_rise, 
                                                results_105$concentration_decay),
-                                              Model = "Model 105"))
+                                              Model = "Model 105")
 results_105_df <- results_105_df[!is.na(results_105_df$Concentration), ]
 
 results_107_df <- data.frame(Time = results_107$time, 
                              Concentration = c(results_107$concentration_rise,
                                                results_107$concentration_decay),
-                                              Model = "Model 107"))
+                                              Model = "Model 107")
 results_107_df <- results_107_df[!is.na(results_107_df$Concentration), ]
 
 
