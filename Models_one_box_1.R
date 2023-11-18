@@ -34,39 +34,11 @@ model_101 <- function(G, Q, V, t_g, T) {
 }
              
 
-# Test value
-G <- 100  # mg/min
-Q <- 20   # m^3/min
-V <- 100  # m^3
-t_g <- 15 # min
-T <- 60   # min
-gamma <- 0.25
-
 # Calculation of steady-state concentrations for model 100
 C_steady_100 <- model_100(G, Q, gamma)
 
 # Calculation of steady-state concentrations for model 101
 results_101 <- model_101(G, Q, V, t_g, T)
-
-             
-print(paste("Model 100 - Steady State Concentration:", C_steady_100))
-print(paste("Model 101 - Concentration at the end of generation phase:", 
-            results_101$concentration_rise[which(!is.na(results_101$concentration_rise))]))
-
-#Visualization
-library(ggplot2)
-
-results_101_df <- data.frame(Time = results_101$time, 
-                             Concentration = c(results_101$concentration_rise, results_101$concentration_decay))
-
-results_101_df <- results_101_df[!is.na(results_101_df$Concentration), ]
-
-ggplot(results_101_df, aes(x = Time, y = Concentration)) + 
-  geom_line() +
-  geom_hline(yintercept = C_steady_100, linetype = "dashed", color = "red") +
-  labs(title = "Model 100 vs Model 101", 
-       x = "Time (minutes)", y = "Concentration (mg/m^3)") +
-  theme_minimal()
 
 
 # Define Model 102
@@ -99,6 +71,7 @@ results_102 <- model_102(G, Q, Q_R, epsilon_RF, gamma)
 results_103 <- model_103(G, Q, Q_R, epsilon_RF, V, t_g, T)
 
 #Visualization
+library(ggplot2)
 C_bar_1 <- results_102$C_bar
 
 results_103_df <- data.frame(Time = results_103$time, 
