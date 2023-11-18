@@ -64,10 +64,10 @@ V <- 100  # m^3
 gamma <- 0.25 
 
 
-results_108 <- model_104(G, Q, Q_L, epsilon_L, gamma)
-results_109 <- model_105(G, Q, Q_L, epsilon_L, V, t_g, T)
-results_110 <- model_106(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, gamma)
-results_111 <- model_107(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, V, t_g, T)
+results_108 <- model_108(G, Q, Q_L, epsilon_L, epsilon_L_F, gamma)
+results_109 <- model_109(G, Q, Q_L, epsilon_L, epsilon_L_F, V, t_g, T)
+results_110 <- model_110(G, Q, Q_L, epsilon_L, epsilon_L_F, Q_R, epsilon_RF, gamma)
+results_111 <- model_111(G, Q, Q_L, epsilon_L, epsilon_L_F, Q_R, epsilon_RF, V, t_g, T)
 
 results_109_df <- data.frame(Time = results_109$time, 
                              Concentration = c(results_109$concentration_rise, 
