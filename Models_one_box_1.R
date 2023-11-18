@@ -52,8 +52,7 @@ model_102 <- function(G, Q, Q_R, epsilon_RF, gamma) {
 # Define Model 103
 model_103 <- function(G, Q, Q_R, epsilon_RF, V, t_g, T) {
   Q_instead <- Q + epsilon_RF * Q_R
-  results_3 <- model_101(G, Q_instead, V, t_g, T)
-  return(results_3)
+  return(model_101(G, Q_instead, V, t_g, T))
 }
 
 T <- 60   # Total time (minutes)
