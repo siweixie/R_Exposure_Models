@@ -33,7 +33,7 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
    C_N_rise <- sapply(time_vector, function(t) {
     if (t <= t_g) {
       return(
-        C_F + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+        C_N + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
         exp(lambda_1 * t) - G * 
         ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
         exp(lambda_2 * t)
@@ -50,7 +50,7 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
            ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
            exp(lambda_2 * t_g)
 
-  C_N0 <- C_F + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+  C_N0 <- C_N + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
           exp(lambda_1 * t_g) - G * 
           ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
           exp(lambda_2 * t_g)
