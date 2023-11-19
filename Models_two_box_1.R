@@ -44,23 +44,23 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
   })
   
   
-  C_F0 <-  (C_F + G * ((lambda_1 * V_N + beta) / beta) * 
+  C_FO <-  C_F + G * ((lambda_1 * V_N + beta) / beta) * 
            ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
            exp(lambda_1 * t_g) - G * ((lambda_2 * V_N + beta) / beta) *
            ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
-           exp(lambda_2 * t_g))
+           exp(lambda_2 * t_g)
 
-  C_N0 <- (C_N + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+  C_NO <- C_N + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
           exp(lambda_1 * t_g) - G * 
           ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
-          exp(lambda_2 * t_g))
+          exp(lambda_2 * t_g)
   
   C_F_decay <- sapply(time_vector, function(t) {
     if (t > t_g) {
       return(
-        (((lambda_1 * V_N + beta) * (beta * (C_F0 - C_N0) - (lambda_2 * V_N * C_N0)))
+        (((lambda_1 * V_N + beta) * (beta * (C_FO - C_NO) - (lambda_2 * V_N * C_NO)))
         / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * (t - t_g)) +
-        (((lambda_2 * V_N + beta) * (beta * (C_F0 - C_N0) - (lambda_1 * V_N * C_N0)))
+        (((lambda_2 * V_N + beta) * (beta * (C_FO - C_NO) - (lambda_1 * V_N * C_NO)))
         / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * (t - t_g))
       )
     } else {
@@ -71,9 +71,9 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
   C_N_decay <- sapply(time_vector, function(t) {
     if (t > t_g) {
       return(
-        (((beta * (C_F0 - C_N0) - (lambda_2 * V_N * C_N0)))
+        (((beta * (C_FO - C_NO) - (lambda_2 * V_N * C_NO)))
         / (V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * (t - t_g)) +
-        (((beta * (C_F0 - C_N0) - (lambda_1 * V_N * C_N0)))
+        (((beta * (C_FO - C_NO) - (lambda_1 * V_N * C_NO)))
         / (V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * (t - t_g))
       )
     } else {
