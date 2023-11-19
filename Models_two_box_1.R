@@ -108,11 +108,12 @@ C_F <- gamma * G / Q # Far field
 C_N <- C_F + ((gamma * G) / beta) # Near field
 results_201 <- model_201(G, Q, V, V_N, beta, t_g, T)
 
-results_201_df <- data.frame(Time = results_201$time, 
-                             Concentration = c(results_201$concentration_F, 
-                                               results_201$concentration_N
-                                              ),
-                                              Model = "Model 201")
+results_201_df <- data.frame(results_201_df <- data.frame(
+  Time = results_201$time,
+  Concentration_F = results_201$concentration_F,
+  Concentration_N = results_201$concentration_N
+)
+                                              
 results_201_df <- results_201_df[!is.na(results_201_df$Concentration), ]
 
 
