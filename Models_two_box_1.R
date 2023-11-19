@@ -6,9 +6,9 @@ model_200 <- function(G, Q, beta, gamma) {
 }
 
 # Define model 201
-model_201 <- function(G, Q, V, V_N, beta, t_g, t) {
+model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
   # Create a time vector
-  time_vector <- seq(0, t, by = 1)
+  time_vector <- seq(0, T, by = 1)
 
   # Lambda calculations
   lambda_1 <- 0.5 * (-(beta * V + V_N * (beta + Q)) / (V_N * V)) + 
@@ -86,7 +86,7 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, t) {
 }
 
 # Define the model parameters with units
-t <- 60    # minutes
+T <- 60    # minutes
 t_g <- 15    # minutes
 G <- 100    # mg/min
 Q <- 20     # m^3/min
@@ -102,7 +102,7 @@ gamma <- 0.25
 results_200 <- model_200(G, Q, beta, gamma)
 C_F <- gamma * G / Q # Far field
 C_N <- C_F + ((gamma * G) / beta) # Near field
-results_201 <- model_201(G, Q, V, V_N, beta, t_g, t)
+results_201 <- model_201(G, Q, V, V_N, beta, t_g, T)
 
 results_201_df <- data.frame(Time = results_201$time, 
                              Concentration = c(results_201$concentration_F_rise, 
