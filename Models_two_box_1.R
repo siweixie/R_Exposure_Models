@@ -15,7 +15,9 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
             sqrt(((beta * V + V_N * (beta + Q)) / (V_N * V))^2 - 4 * ((beta * Q) / (V_N * V)))
   lambda_2 <- 0.5 * ((-(beta * V + V_N * (beta + Q))) / (V_N * V)) - 
             sqrt(((beta * V + V_N * (beta + Q)) / (V_N * V))^2 - 4 * ((beta * Q) / (V_N * V)))
-  
+  lambda_1 <- -abs(lambda_1)
+  lambda_2 <- -abs(lambda_2)
+
   C_F_rise <- sapply(time_vector, function(t) {
     if (t <= t_g) {
       return(
