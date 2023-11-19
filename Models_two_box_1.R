@@ -80,9 +80,11 @@ model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
       return(NA)
     }
   })
+
+  CF <- ifelse(is.na(C_F_rise), C_F_decay, C_F_rise)
+  CN <- ifelse(is.na(C_N_rise), C_N_decay, C_N_rise)
   
-  return(list(time = time_vector, concentration_F_rise = C_F_rise, concentration_N_rise = C_N_rise, 
-              concentration_F_decay = C_F_decay, concentration_N_decay = C_N_decay))
+  return(list(time = time_vector, concentration_F = CF, concentration_N = CN))
 }
 
 # Define the model parameters with units
@@ -105,10 +107,8 @@ C_N <- C_F + ((gamma * G) / beta) # Near field
 results_201 <- model_201(G, Q, V, V_N, beta, t_g, T)
 
 results_201_df <- data.frame(Time = results_201$time, 
-                             Concentration = c(results_201$concentration_F_rise, 
-                                               results_201$concentration_N_rise,
-                                               results_201$concentration_F_decay,
-                                               results_201$concentration_N_decay
+                             Concentration = c(results_201$concentration_F, 
+                                               results_201$concentration_N
                                               ),
                                               Model = "Model 201")
 results_201_df <- results_201_df[!is.na(results_201_df$Concentration), ]
