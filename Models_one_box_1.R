@@ -32,7 +32,19 @@ model_101 <- function(G, Q, V, t_g, T) {
   
   return(list(time = time_vector, concentration_rise = C_rise, concentration_decay = C_decay))
 }
-             
+
+
+T <- 60   # Total time (minutes)
+t_g <- 15 # Time of generation (minutes)
+G <- 100  # mg/min
+Q <- 20   # m^3/min
+epsilon_L <- 0.5  # Efficiency of local exhaust
+epsilon_L_F <- 0.75  # Efficiency of local exhaust filtration
+Q_R <- 5  # m^3/min
+epsilon_RF <- 0.9  # Efficiency of recirculation filtration
+V <- 100  # m^3
+gamma <- 0.25  
+
 
 # Calculation of steady-state concentrations for model 100
 C_steady_100 <- model_100(G, Q, gamma)
