@@ -117,12 +117,11 @@ results_201_df <- data.frame(
 results_201_df <- results_201_df[!is.na(results_201_df$Concentration), ]
 
 
-# Comparison of model 105 and model 107:
+# Comparison of model
 
-combined_data <- rbind(results_105_df, results_107_df)
-ggplot(combined_data, aes(x = Time, y = Concentration, color = Model)) +
+ggplot(results_201_df, aes(x = Time, y = Concentration, color = Model)) +
   geom_line() +
-  labs(title = "Model 105 vs Model 107",
+  labs(title = "Model201",
        x = "Time (minutes)", 
        y = "Concentration (mg/m^3)") +
   theme_minimal()
