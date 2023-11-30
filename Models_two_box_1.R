@@ -14,7 +14,7 @@ T <- 60    # minutes
 t_g <- 15    # minutes
 G <- 100    # mg/min
 Q <- 20     # m^3/min
-QL <- 5     # m^3/min
+Q_L <- 5     # m^3/min
 epsilon_L <- 0.5  # Local control efficiency
 epsilon_LF <- 0.75 # Filtration efficiency
 epsilon_RF <- 0.9
