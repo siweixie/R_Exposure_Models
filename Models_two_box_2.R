@@ -88,8 +88,8 @@ model_206 <- function(G, Q, Q_L, epsilon_RF, Q_R, beta, gamma, epsilon_L) {
   return(list(C_F = C_F, C_N = C_N, C_L_E = C_L_E, C_R_F = C_R_F))
 }
 
-# Run Model 204
-results_204 <- model_204(G, Q, Q_L, beta, gamma, epsilon_L)
+# Run Model 206
+results_206 <- model_206(G, Q, Q_L, epsilon_RF, Q_R, beta, gamma, epsilon_L)
 
 
 # Define model 207
