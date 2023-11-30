@@ -1,3 +1,5 @@
+library(ggplot2)
+
 # Define model 200
 model_200 <- function(G, Q, beta, gamma) {
   C_F <- gamma * G / Q # Far field
@@ -6,88 +8,6 @@ model_200 <- function(G, Q, beta, gamma) {
 }
 
 # Define model 201
-model_201 <- function(G, Q, V, V_N, beta, t_g, T) {
-  # Create a time vector
-  time_vector <- seq(0, T, by = 1)
-
-  # Lambda calculations
-  lambda_1 <- 0.5 * ((-(beta * V + V_N * (beta + Q))) / (V_N * V)) + 
-            sqrt(((beta * V + V_N * (beta + Q)) / (V_N * V))^2 - 4 * ((beta * Q) / (V_N * V)))
-  lambda_2 <- 0.5 * ((-(beta * V + V_N * (beta + Q))) / (V_N * V)) - 
-            sqrt(((beta * V + V_N * (beta + Q)) / (V_N * V))^2 - 4 * ((beta * Q) / (V_N * V)))
-  lambda_1 <- -abs(lambda_1)
-  lambda_2 <- -abs(lambda_2)
-
-  C_F_rise <- sapply(time_vector, function(t) {
-    if (t <= t_g) {
-      return(
-        C_F + G * ((lambda_1 * V_N + beta) / beta) * 
-        ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
-        exp(lambda_1 * t) - G * ((lambda_2 * V_N + beta) / beta) *
-        ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
-        exp(lambda_2 * t)
-      )
-    } else {
-      return(NA)
-    }
-  })
-
-   C_N_rise <- sapply(time_vector, function(t) {
-    if (t <= t_g) {
-      return(
-        C_N + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
-        exp(lambda_1 * t) - G * 
-        ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
-        exp(lambda_2 * t)
-      )
-    } else {
-      return(NA)
-    }
-  })
-  
-  
-  C_FO <-  C_F + G * ((lambda_1 * V_N + beta) / beta) * 
-           ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
-           exp(lambda_1 * t_g) - G * ((lambda_2 * V_N + beta) / beta) *
-           ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
-           exp(lambda_2 * t_g)
-
-  C_NO <- C_N + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
-          exp(lambda_1 * t_g) - G * 
-          ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) *
-          exp(lambda_2 * t_g)
-  
-  C_F_decay <- sapply(time_vector, function(t) {
-    if (t > t_g) {
-      return(
-        (((lambda_1 * V_N + beta) * (beta * (C_FO - C_NO) - (lambda_2 * V_N * C_NO)))
-        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * (t - t_g)) +
-        (((lambda_2 * V_N + beta) * (beta * (C_FO - C_NO) - (lambda_1 * V_N * C_NO)))
-        / (beta * V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * (t - t_g))
-      )
-    } else {
-      return(NA)
-    }
-  })
-
-  C_N_decay <- sapply(time_vector, function(t) {
-    if (t > t_g) {
-      return(
-        (((beta * (C_FO - C_NO) - (lambda_2 * V_N * C_NO)))
-        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_1 * (t - t_g)) +
-        (((beta * (C_FO - C_NO) - (lambda_1 * V_N * C_NO)))
-        / (V_N * (lambda_1 - lambda_2))) * exp(lambda_2 * (t - t_g))
-      )
-    } else {
-      return(NA)
-    }
-  })
-
-  CF <- ifelse(is.na(C_F_rise), C_F_decay, C_F_rise)
-  CN <- ifelse(is.na(C_N_rise), C_N_decay, C_N_rise)
-  
-  return(list(time = time_vector, concentration_F = CF, concentration_N = CN))
-}
 
 # Define the model parameters with units
 T <- 60    # minutes
@@ -103,26 +23,56 @@ V_N <- 8    # Near-field volume in m^3
 beta <- 5   # Near-field ventilation rate in m^3/min
 gamma <- 0.25
 
-results_200 <- model_200(G, Q, beta, gamma)
-C_F <- gamma * G / Q # Far field
-C_N <- C_F + ((gamma * G) / beta) # Near field
-results_201 <- model_201(G, Q, V, V_N, beta, t_g, T)
+# Derived parameters
+V_F <- V - V_N  # Far-field volume in m^3
 
-results_201_df <- data.frame(
-  Time = results_201$time,
-  Concentration_F = results_201$concentration_F,
-  Concentration_N = results_201$concentration_N
-)
-                                              
-results_201_df <- results_201_df[!is.na(results_201_df$Concentration), ]
+# Time points
+time_points <- 0:T
 
+# Lambda calculations
+lambda_1 <- 0.5 * (-(beta * V_F + V_N * (beta + Q)) / (V_N * V_F) +
+                     sqrt(((beta * V_F + V_N * (beta + Q)) / (V_N * V_F))^2 -
+                            4 * (beta * Q) / (V_N * V_F)))
+lambda_2 <- 0.5 * (-(beta * V_F + V_N * (beta + Q)) / (V_N * V_F) -
+                     sqrt(((beta * V_F + V_N * (beta + Q)) / (V_N * V_F))^2 -
+                            4 * (beta * Q) / (V_N * V_F)))
 
-# Comparison of model
+# Initial concentrations for the decay phase
+C_F0 <- G / Q  # Steady state far field concentration
+C_N0 <- C_F0 + G / beta  # Steady state near field concentration
 
-ggplot(results_201_df, aes(x = Time, y = Concentration, color = Model)) +
-  geom_line() +
-  labs(title = "Model201",
-       x = "Time (minutes)", 
-       y = "Concentration (mg/m^3)") +
-  theme_minimal()
+# Concentration calculations
+C_F_t <- numeric(length(time_points))
+C_N_t <- numeric(length(time_points))
+
+for (t in time_points) {
+  if (t <= t_g) {
+    C_F_t[t + 1] <- C_F0 + G * ((lambda_1 * V_N + beta) / beta) * 
+      ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+      exp(lambda_1 * t) - G * ((lambda_2 * V_N + beta) / beta) * 
+      ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+      exp(lambda_2 * t)
+    C_N_t[t + 1] <- C_N0 + G * ((beta * Q + lambda_2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+      exp(lambda_1 * t) - G * 
+      ((beta * Q + lambda_1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda_1 - lambda_2))) * 
+      exp(lambda_2 * t)
+  } else {
+    C_F_t[t + 1] <- C_F_t[t_g + 1] * exp(lambda_1 * (t - t_g))
+    C_N_t[t + 1] <- C_N_t[t_g + 1] * exp(lambda_1 * (t - t_g))
+  }
+}
+
+# Data preparation for plotting
+df <- data.frame(Time = time_points, Far_Field = C_F_t, Near_Field = C_N_t)
+
+# Plot the results
+ggplot(data = df, aes(x = Time)) +
+  geom_line(aes(y = Far_Field, color = "Far Field")) +
+  geom_line(aes(y = Near_Field, color = "Near Field")) +
+  labs(title = 'Concentration vs. Time for a Cyclic Task', 
+       x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
+  theme_minimal() +
+  scale_color_manual("", 
+                     breaks = c("Far Field", "Near Field"),
+                     values = c("blue", "red"))
 
