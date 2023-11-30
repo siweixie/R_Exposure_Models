@@ -114,17 +114,17 @@ V_F <- V - V_N  # Far-field volume in m^3
 
 # Time points
 time_points <- 0:T
-
+Q_prime <- Q + epsilon_RF * Q_R
 beta_i = Q_L + beta
 r1 = (-b + sqrt(b^2 - 4 * a*c)) / (2 * a)
 r2 = (-b - sqrt(b^2 - 4 * a*c)) / (2 * a)
 a = V_F * V_N
 b = (beta_i + Q) * V_N + beta_i * V_F
-c = beta_i * (beta_i + Q) - beta_i * (beta + Q_L * (1 - epsilon_LF))
+c = beta_i * (beta_i + Q_prime) - beta_i * (beta + Q_L * (1 - epsilon_LF))
 
 # Initial concentrations for the decay phase
 epsilon_N <- Q_L / (Q_L + beta)
-C_F0 <- (G * ((1 - epsilon_L * epsilon_LF - epsilon_N * epsilon_LF * (1 - epsilon_L)))) / (Q + epsilon_LF * Q_L)
+C_F0 <- (G * ((1 - epsilon_L * epsilon_LF - epsilon_N * epsilon_LF * (1 - epsilon_L)))) / (Q_prime + epsilon_LF * Q_L)
 C_N0 <- C_F0 + ((G * (1 - epsilon_L) * epsilon_N) / Q_L)
 
 
