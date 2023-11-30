@@ -63,17 +63,92 @@ for (t in time_points) {
   }
 }
 
-# Data preparation for plotting
-df <- data.frame(Time = time_points, Far_Field = C_F_t, Near_Field = C_N_t)
 
-# Plot the results
-ggplot(data = df, aes(x = Time)) +
-  geom_line(aes(y = Far_Field, color = "Far Field")) +
-  geom_line(aes(y = Near_Field, color = "Near Field")) +
-  labs(title = 'Concentration vs. Time for a Cyclic Task', 
-       x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
-  theme_minimal() +
-  scale_color_manual("", 
-                     breaks = c("Far Field", "Near Field"),
-                     values = c("blue", "red"))
+results_201 <- data.frame(Time = time_points, C_F_t = C_F_t, C_N_t = C_N_t)
+
+# Model 202
+model_202 <- function(G, Q, Q_R, beta, gamma, epsilon_RF) {
+  C_F <- gamma * G / (Q + Q_R * epsilon_RF) # Steady state far field concentration
+  C_N <- C_F + (gamma * G) / beta           # Steady state near field concentration
+  C_R_F <- C_F * (1 - epsilon_RF)           # Concentration on the return side after filtration
+  
+  return(list(C_F = C_F, C_N = C_N, C_R_F = C_R_F))
+}
+
+# Run Model 202
+results_202 <- model_202(G, Q, Q_R, beta, gamma, epsilon_LF)
+
+
+
+# Model 203
+model_203 <- function(G, Q, Q_R, beta, gamma, epsilon_RF, epsilon_L, t_g, T, V, V_N) {
+  # Adjusted ventilation rate including filtered recirculated air
+  Q_prime <- Q + epsilon_RF * Q_R
+  
+  # Derived parameters
+  V_F <- V - V_N  # Far-field volume in m^3
+  
+  # Time points
+  time_points <- 0:T
+  
+  # Lambda calculations (same as in Model 201 but with Q replaced by Q_prime)
+  lambda_1 <- 0.5 * (-(beta * V_F + V_N * (beta + Q_prime)) / (V_N * V_F) +
+                       sqrt(((beta * V_F + V_N * (beta + Q_prime)) / (V_N * V_F))^2 -
+                              4 * (beta * Q_prime) / (V_N * V_F)))
+  lambda_2 <- 0.5 * (-(beta * V_F + V_N * (beta + Q_prime)) / (V_N * V_F) -
+                       sqrt(((beta * V_F + V_N * (beta + Q_prime)) / (V_N * V_F))^2 -
+                              4 * (beta * Q_prime) / (V_N * V_F)))
+  
+  
+  # Initial concentrations for the decay phase with Q replaced by Q_prime
+  C_F0 <- G / Q_prime  # Steady state far field concentration
+  C_N0 <- C_F0 + G / beta  # Steady state near field concentration
+  
+  # Concentration calculations
+  C_F_t <- numeric(length(time_points))
+  C_N_t <- numeric(length(time_points))
+  
+  for (t in time_points) {
+    if (t <= t_g) {
+      # Concentration rise equations with Q replaced by Q_prime
+      C_F_t[t + 1] <- C_F0 + G * ((lambda_1 * V_N + beta) / beta) * 
+        ((beta * Q_prime + lambda_2 * V_N * (beta + Q_prime)) / (beta * Q_prime * V_N * (lambda_1 - lambda_2))) * 
+        exp(lambda_1 * t) - G * ((lambda_2 * V_N + beta) / beta) * 
+        ((beta * Q_prime + lambda_1 * V_N * (beta + Q_prime)) / (beta * Q_prime * V_N * (lambda_1 - lambda_2))) * 
+        exp(lambda_2 * t)
+      C_N_t[t + 1] <- C_N0 + G * ((beta * Q_prime + lambda_2 * V_N * (beta + Q_prime)) / (beta * Q_prime * V_N * (lambda_1 - lambda_2))) * 
+        exp(lambda_1 * t) - G * 
+        ((beta * Q_prime + lambda_1 * V_N * (beta + Q_prime)) / (beta * Q_prime * V_N * (lambda_1 - lambda_2))) * 
+        exp(lambda_2 * t)
+    } else {
+      # Concentration decay equations with Q replaced by Q_prime
+      C_F_t[t + 1] <- C_F_t[t_g + 1] * exp(lambda_1 * (t - t_g))
+      C_N_t[t + 1] <- C_N_t[t_g + 1] * exp(lambda_1 * (t - t_g))
+    }
+  }
+  
+  return(list(Time = time_points, C_F_t = C_F_t, C_N_t = C_N_t))
+}
+
+# Run Model 203
+results_203 <- model_203(G, Q, Q_R, beta, gamma, epsilon_RF, epsilon_L, t_g, T, V, V_N)
+
+combined_df <- data.frame(
+    Time = rep(time_points, 4),
+    Concentration = c(results_201$Far_Field, results_201$Near_Field, results_203$C_F_t, results_203$C_N_t), # 假设results_203包含了C_F_t和C_N_t
+    Model = factor(rep(c("Model 201 Far Field", "Model 201 Near Field",
+                         "Model 203 Far Field", "Model 203 Near Field"), each = T + 1))
+)
+
+# 绘制对比图
+ggplot(data = combined_df, aes(x = Time, y = Concentration, color = Model)) +
+    geom_line() +
+    labs(title = 'Comparison of Concentration vs. Time for Models 201 and 203', 
+         x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
+    theme_minimal() +
+    scale_color_manual(values = c("Model 201 Far Field" = "blue",
+                                  "Model 201 Near Field" = "red",
+                                  "Model 203 Far Field" = "green",
+                                  "Model 203 Near Field" = "orange")) +
+    guides(color = guide_legend(title = "Model and Field"))
 
