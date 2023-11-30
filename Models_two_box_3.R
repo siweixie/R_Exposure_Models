@@ -16,7 +16,65 @@ results_208 <- model_208(G, Q, Q_L, beta, gamma, epsilon_L, epsilon_LF)
                     
 
 # Model 209
-                   
+
+# Define the model parameters with units
+T <- 60    # minutes
+t_g <- 15    # minutes
+G <- 100    # mg/min
+Q <- 20     # m^3/min
+Q_L <- 5     # m^3/min
+epsilon_L <- 0.5  # Local control efficiency
+epsilon_LF <- 0.75 # Filtration efficiency
+epsilon_RF <- 0.9
+Q_R <- 5    # m^3/min
+V <- 100    # m^3
+V_N <- 8    # Near-field volume in m^3
+beta <- 5   # Near-field ventilation rate in m^3/min
+gamma <- 0.25
+
+# Derived parameters
+V_F <- V - V_N  # Far-field volume in m^3
+
+# Time points
+time_points <- 0:T
+
+beta_i = Q_L + beta
+r1 = (-b + sqrt(b^2 - 4 * a*c)) / (2 * a)
+r2 = (-b - sqrt(b^2 - 4 * a*c)) / (2 * a)
+a = V_F * V_N
+b = (beta_i + Q) * V_N + beta_i * V_F
+c = beta_i * (beta_i + Q) - beta_i * (beta + Q_L * (1 - epsilon_LF))
+
+# Initial concentrations for the decay phase
+epsilon_N <- Q_L / (Q_L + beta)
+C_F0 <- (G * ((1 - epsilon_L * epsilon_LF - epsilon_N * epsilon_LF * (1 - epsilon_L)))) / (Q + epsilon_LF * Q_L)
+C_N0 <- C_F0 + ((G * (1 - epsilon_L) * epsilon_N) / Q_L)
+
+
+# Concentration calculations
+C_F_t <- numeric(length(time_points))
+C_N_t <- numeric(length(time_points))
+
+for (t in time_points) {
+  if (t <= t_g) {
+    C_F_t[t + 1] <- C_F0 + ((beta_i * C_F0 - C_N0 * (beta_i + V_N * r2)) / (V_N * (r2 - r1))) *
+      ((beta_i + V_N * r1) / beta_i) * exp(r1 * t) + 
+      ((C_N0 * (beta_i + V_N * r1) - beta_i * C_F0) / V_N * (r2 - r1)) * 
+      ((beta_i + V_N * r2) / beta_i) * exp(r2 * t)
+    
+    C_N_t[t + 1] <- C_N0 + ((beta_i * C_F0 - C_N0 * (beta_i + V_N * r2)) / (V_N * (r2 - r1))) *
+      exp(r1 * t) +
+      ((C_N0 * (beta_i + V_N * r1) - beta_i * C_F0) / V_N * (r2 - r1)) * 
+      exp(r2 * t)
+  } else {
+    C_F_t[t + 1] <- C_F_t[t_g + 1] * exp(r1 * (t - t_g))
+    C_N_t[t + 1] <- C_N_t[t_g + 1] * exp(r1 * (t - t_g))
+  }
+}
+
+
+results_209 <- data.frame(Time = time_points, C_F_t = C_F_t, C_N_t = C_N_t)                  
+
                     
 # Model 210
 
@@ -32,4 +90,66 @@ model_210 <- function(G, Q, Q_L, beta, gamma, epsilon_L, epsilon_LF, epsilon_RF,
 
 # Run Model 210
 results_210 <- model_210(G, Q, Q_L, beta, gamma, epsilon_L, epsilon_LF, epsilon_RF, Q_R)
+
+
+# Model 211
+
+# Define the model parameters with units
+T <- 60    # minutes
+t_g <- 15    # minutes
+G <- 100    # mg/min
+Q <- 20     # m^3/min
+Q_L <- 5     # m^3/min
+epsilon_L <- 0.5  # Local control efficiency
+epsilon_LF <- 0.75 # Filtration efficiency
+epsilon_RF <- 0.9
+Q_R <- 5    # m^3/min
+V <- 100    # m^3
+V_N <- 8    # Near-field volume in m^3
+beta <- 5   # Near-field ventilation rate in m^3/min
+gamma <- 0.25
+
+# Derived parameters
+V_F <- V - V_N  # Far-field volume in m^3
+
+# Time points
+time_points <- 0:T
+
+beta_i = Q_L + beta
+r1 = (-b + sqrt(b^2 - 4 * a*c)) / (2 * a)
+r2 = (-b - sqrt(b^2 - 4 * a*c)) / (2 * a)
+a = V_F * V_N
+b = (beta_i + Q) * V_N + beta_i * V_F
+c = beta_i * (beta_i + Q) - beta_i * (beta + Q_L * (1 - epsilon_LF))
+
+# Initial concentrations for the decay phase
+epsilon_N <- Q_L / (Q_L + beta)
+C_F0 <- (G * ((1 - epsilon_L * epsilon_LF - epsilon_N * epsilon_LF * (1 - epsilon_L)))) / (Q + epsilon_LF * Q_L)
+C_N0 <- C_F0 + ((G * (1 - epsilon_L) * epsilon_N) / Q_L)
+
+
+# Concentration calculations
+C_F_t <- numeric(length(time_points))
+C_N_t <- numeric(length(time_points))
+
+for (t in time_points) {
+  if (t <= t_g) {
+    C_F_t[t + 1] <- C_F0 + ((beta_i * C_F0 - C_N0 * (beta_i + V_N * r2)) / (V_N * (r2 - r1))) *
+      ((beta_i + V_N * r1) / beta_i) * exp(r1 * t) + 
+      ((C_N0 * (beta_i + V_N * r1) - beta_i * C_F0) / V_N * (r2 - r1)) * 
+      ((beta_i + V_N * r2) / beta_i) * exp(r2 * t)
+    
+    C_N_t[t + 1] <- C_N0 + ((beta_i * C_F0 - C_N0 * (beta_i + V_N * r2)) / (V_N * (r2 - r1))) *
+      exp(r1 * t) +
+      ((C_N0 * (beta_i + V_N * r1) - beta_i * C_F0) / V_N * (r2 - r1)) * 
+      exp(r2 * t)
+  } else {
+    C_F_t[t + 1] <- C_F_t[t_g + 1] * exp(r1 * (t - t_g))
+    C_N_t[t + 1] <- C_N_t[t_g + 1] * exp(r1 * (t - t_g))
+  }
+}
+
+
+results_211 <- data.frame(Time = time_points, C_F_t = C_F_t, C_N_t = C_N_t)                 
+                    
 
