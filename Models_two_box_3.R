@@ -213,6 +213,9 @@ if (shapiro_209_far$p.value < 0.05 || shapiro_211_far$p.value < 0.05) {
 # Output results
 mse_209_211_far
 r2_209_211_far
+shapiro_209_far
+shapiro_211_far
+if (exists("wilcox_209_211_far")) wilcox_209_211_far
 
 
 # Overall comparison
