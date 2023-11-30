@@ -17,6 +17,7 @@ Q <- 20     # m^3/min
 QL <- 5     # m^3/min
 epsilon_L <- 0.5  # Local control efficiency
 epsilon_LF <- 0.75 # Filtration efficiency
+epsilon_RF <- 0.9
 Q_R <- 5    # m^3/min
 V <- 100    # m^3
 V_N <- 8    # Near-field volume in m^3
