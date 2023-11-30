@@ -136,7 +136,7 @@ results_203 <- model_203(G, Q, Q_R, beta, gamma, epsilon_RF, epsilon_L, t_g, T, 
 
 combined_df <- data.frame(
     Time = rep(time_points, 4),
-    Concentration = c(results_201$C_F_t, results_201$C_N_t, results_203$C_F_t, results_203$C_N_t), # 假设results_203包含了C_F_t和C_N_t
+    Concentration = c(results_201$C_F_t, results_201$C_N_t, results_203$C_F_t, results_203$C_N_t),
     Model = factor(rep(c("Model 201 Far Field", "Model 201 Near Field",
                          "Model 203 Far Field", "Model 203 Near Field"), each = T + 1))
 )
