@@ -124,7 +124,7 @@ c = beta_i * (beta_i + Q_prime) - beta * beta_i
 
 # Initial concentrations for the decay phase
 epsilon_N <- Q_L / (Q_L + beta)
-C_F0 <- (G * (1 - epsilon_L) * (1 - epsilon_N)) / (Q + epsilon_RF * Q_R + Q_L) # Steady state far field concentration
+C_F0 <- (G * (1 - epsilon_L) * (1 - epsilon_N)) / (Q + Q_L) # Steady state far field concentration
 C_N0 <- C_F0 + ((G * (1 - epsilon_L) * epsilon_N) / Q_L) # Steady state near field concentration
 
 
