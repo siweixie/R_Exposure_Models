@@ -153,3 +153,23 @@ for (t in time_points) {
 results_211 <- data.frame(Time = time_points, C_F_t = C_F_t, C_N_t = C_N_t)                 
                     
 
+
+combined_df <- data.frame(
+    Time = rep(time_points, 4),
+    Concentration = c(results_209$C_F_t, results_209$C_N_t, results_211$C_F_t, results_211$C_N_t), 
+    Model = factor(rep(c("Model 209 Far Field", "Model 209 Near Field",
+                         "Model 211 Far Field", "Model 211 Near Field"), each = T + 1))
+)
+
+#Comparison
+
+ggplot(data = combined_df, aes(x = Time, y = Concentration, color = Model)) +
+    geom_line() +
+    labs(title = 'Comparison of Concentration for Models 209 and 211', 
+         x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
+    theme_minimal() +
+    scale_color_manual(values = c("Model 209 Far Field" = "blue",
+                                  "Model 209 Near Field" = "red",
+                                  "Model 211 Far Field" = "green",
+                                  "Model 211 Near Field" = "orange")) +
+    guides(color = guide_legend(title = "Model and Field"))                    
