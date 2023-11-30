@@ -66,6 +66,7 @@ for (t in time_points) {
 
 results_201 <- data.frame(Time = time_points, C_F_t = C_F_t, C_N_t = C_N_t)
 
+
 # Model 202
 model_202 <- function(G, Q, Q_R, beta, gamma, epsilon_RF) {
   C_F <- gamma * G / (Q + Q_R * epsilon_RF) # Steady state far field concentration
