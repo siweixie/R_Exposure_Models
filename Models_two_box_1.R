@@ -140,7 +140,8 @@ combined_df <- data.frame(
                          "Model 203 Far Field", "Model 203 Near Field"), each = T + 1))
 )
 
-# 绘制对比图
+#Comparison
+
 ggplot(data = combined_df, aes(x = Time, y = Concentration, color = Model)) +
     geom_line() +
     labs(title = 'Comparison of Concentration vs. Time for Models 201 and 203', 
