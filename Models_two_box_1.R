@@ -145,7 +145,7 @@ combined_df <- data.frame(
 
 ggplot(data = combined_df, aes(x = Time, y = Concentration, color = Model)) +
     geom_line() +
-    labs(title = 'Comparison of Concentration vs. Time for Models 201 and 203', 
+    labs(title = 'Comparison of Concentration for Models 201 and 203', 
          x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
     theme_minimal() +
     scale_color_manual(values = c("Model 201 Far Field" = "blue",
