@@ -197,7 +197,7 @@ far_field_df <- data.frame(
 # Plot for Near Field Data
 ggplot(data = near_field_df, aes(x = Time, y = Concentration, color = Model)) +
     geom_line() +
-    labs(title = 'Concentration Comparison for Models 201, 203, 205, 207, 209, 211 - Near Field', 
+    labs(title = 'Concentration Comparison for Models - Near Field', 
          x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
     theme_minimal() +
     scale_color_brewer(palette = "Set1") +
@@ -206,7 +206,7 @@ ggplot(data = near_field_df, aes(x = Time, y = Concentration, color = Model)) +
 # Plot for Far Field Data
 ggplot(data = far_field_df, aes(x = Time, y = Concentration, color = Model)) +
     geom_line() +
-    labs(title = 'Concentration Comparison for Models 201, 203, 205, 207, 209, 211 - Far Field', 
+    labs(title = 'Concentration Comparison for Models - Far Field', 
          x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
     theme_minimal() +
     scale_color_brewer(palette = "Set2") +
