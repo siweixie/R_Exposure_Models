@@ -173,4 +173,41 @@ ggplot(data = combined_df, aes(x = Time, y = Concentration, color = Model)) +
                                   "Model 209 Near Field" = "red",
                                   "Model 211 Far Field" = "green",
                                   "Model 211 Near Field" = "orange")) +
-    guides(color = guide_legend(title = "Model and Field"))                    
+    guides(color = guide_legend(title = "Model and Field"))          
+
+
+near_field_df <- data.frame(
+    Time = rep(time_points, 6),  
+    Concentration = c(results_201$C_N_t, results_203$C_N_t, results_205$C_N_t, 
+                      results_207$C_N_t, results_209$C_N_t, results_211$C_N_t), 
+    Model = factor(rep(c("Model 201 Near Field", "Model 203 Near Field",
+                         "Model 205 Near Field", "Model 207 Near Field",
+                         "Model 209 Near Field", "Model 211 Near Field"), each = T + 1))
+)
+
+far_field_df <- data.frame(
+    Time = rep(time_points, 6),  
+    Concentration = c(results_201$C_F_t, results_203$C_F_t, results_205$C_F_t, 
+                      results_207$C_F_t, results_209$C_F_t, results_211$C_F_t), 
+    Model = factor(rep(c("Model 201 Far Field", "Model 203 Far Field",
+                         "Model 205 Far Field", "Model 207 Far Field",
+                         "Model 209 Far Field", "Model 211 Far Field"), each = T + 1))
+
+  
+# Plot for Near Field Data
+ggplot(data = near_field_df, aes(x = Time, y = Concentration, color = Model)) +
+    geom_line() +
+    labs(title = 'Concentration Comparison for Models 201, 203, 205, 207, 209, 211 - Near Field', 
+         x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
+    theme_minimal() +
+    scale_color_brewer(palette = "Set1") +
+    guides(color = guide_legend(title = "Model"))
+
+# Plot for Far Field Data
+ggplot(data = far_field_df, aes(x = Time, y = Concentration, color = Model)) +
+    geom_line() +
+    labs(title = 'Concentration Comparison for Models 201, 203, 205, 207, 209, 211 - Far Field', 
+         x = 'Time (minutes)', y = 'Concentration (mg/m^3)') +
+    theme_minimal() +
+    scale_color_brewer(palette = "Set2") +
+    guides(color = guide_legend(title = "Model"))
