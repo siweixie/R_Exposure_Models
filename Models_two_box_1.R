@@ -154,3 +154,46 @@ ggplot(data = combined_df, aes(x = Time, y = Concentration, color = Model)) +
                                   "Model 203 Near Field" = "orange")) +
     guides(color = guide_legend(title = "Model and Field"))
 
+
+# MSE and R-squared for Near Field
+mse_201_203_near <- mean((results_201$C_N_t - results_203$C_N_t)^2)
+r2_201_203_near <- cor(results_201$C_N_t, results_203$C_N_t)^2
+
+# Normality Test for Near Field
+shapiro_201_near <- shapiro.test(results_201$C_N_t)
+shapiro_203_near <- shapiro.test(results_203$C_N_t)
+
+# Wilcoxon Test for Near Field (if needed)
+if (shapiro_201_near$p.value < 0.05 || shapiro_203_near$p.value < 0.05) {
+    wilcox_201_203_near <- wilcox.test(results_201$C_N_t, results_203$C_N_t, paired = TRUE)
+}
+
+# Output results
+mse_201_203_near
+r2_201_203_near
+shapiro_201_near
+shapiro_203_near
+if (exists("wilcox_201_203_near")) wilcox_201_203_near
+
+
+# MSE and R-squared for Far Field
+mse_201_203_far <- mean((results_201$C_F_t - results_203$C_F_t)^2)
+r2_201_203_far <- cor(results_201$C_F_t, results_203$C_F_t)^2
+
+# Normality Test for Far Field
+shapiro_201_far <- shapiro.test(results_201$C_F_t)
+shapiro_203_far <- shapiro.test(results_203$C_F_t)
+
+# Wilcoxon Test for Far Field (if needed)
+if (shapiro_201_far$p.value < 0.05 || shapiro_203_far$p.value < 0.05) {
+    wilcox_201_203_far <- wilcox.test(results_201$C_F_t, results_203$C_F_t, paired = TRUE)
+}
+
+# Output results
+mse_201_203_far
+r2_201_203_far
+shapiro_201_far
+shapiro_203_far
+if (exists("wilcox_201_203_far")) wilcox_201_203_far
+
+
