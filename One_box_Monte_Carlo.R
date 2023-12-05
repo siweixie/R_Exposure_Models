@@ -423,14 +423,14 @@ ggplot() +
                                 
 
 # Overall comparison
-average101$Model <- "Model 101"
-average103$Model <- "Model 103"
-average105$Model <- "Model 105"
-average107$Model <- "Model 107"
-average109$Model <- "Model 109"
-average111$Model <- "Model 111"
+average_101$Model <- "Model 101"
+average_103$Model <- "Model 103"
+average_105$Model <- "Model 105"
+average_107$Model <- "Model 107"
+average_109$Model <- "Model 109"
+average_111$Model <- "Model 111"
 
-combined_averages <- rbind(average101, average103, average105, average107, average109, average111)
+combined_averages <- rbind(average_101, average_103, average_105, average_107, average_109, average_111)
 
 ggplot(combined_averages, aes(x = Time, y = Concentration, color = Model)) +
     geom_line() +
