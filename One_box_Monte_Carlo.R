@@ -31,8 +31,7 @@ model_101 <- function(G, Q, V, t_g, T) {
   })
   
   return(list(time = time_vector, concentration_rise = C_rise, concentration_decay = C_decay))
-}
-
+} 
 
 T <- 60   # Total time (minutes)
 t_g <- 15 # Time of generation (minutes)
@@ -44,7 +43,6 @@ Q_R <- 5  # m^3/min
 epsilon_RF <- 0.9  # Efficiency of recirculation filtration
 V <- 100  # m^3
 gamma <- 0.25  
-
 
 # Calculation of steady-state concentrations for model 100
 C_steady_100 <- model_100(G, Q, gamma)
@@ -67,17 +65,6 @@ model_103 <- function(G, Q, Q_R, epsilon_RF, V, t_g, T) {
   return(model_101(G, Q_instead, V, t_g, T))
 }
 
-T <- 60   # Total time (minutes)
-t_g <- 15 # Time of generation (minutes)
-G <- 100  # mg/min
-Q <- 20   # m^3/min
-epsilon_L <- 0.5  # Efficiency of local exhaust
-epsilon_L_F <- 0.75  # Efficiency of local exhaust filtration
-Q_R <- 5  # m^3/min
-epsilon_RF <- 0.9  # Efficiency of recirculation filtration
-V <- 100  # m^3
-gamma <- 0.25  
-
 results_102 <- model_102(G, Q, Q_R, epsilon_RF, gamma)
 results_103 <- model_103(G, Q, Q_R, epsilon_RF, V, t_g, T)
 
@@ -93,12 +80,15 @@ results_103_df <- results_103_df[!is.na(results_103_df$Concentration), ]
 
 G_range <- c(60, 150)
 Q_range <- c(10, 30)
+Q_L_range <- c(2, 8)
+epsilon_L_range <- c(0.2, 0.8)
+epsilon_L_F_range <- c(0.5, 0.95)
 Q_R_range <- c(2, 10)
+epsilon_RF_range <- c(0.5, 0.95)
 V_range <- c(60, 150)
 t_g_range <- c(5, 30)
 T <- 60
 gamma_range <- t_g_range / T
-epsilon_RF_range <- c(0.5, 0.95)
 
 # simulation times
 n_simulations <- 1000
@@ -152,9 +142,6 @@ ggplot() +
 
 
 
-
-
-
 # Define Model 104
 model_104 <- function(G, Q, Q_L, epsilon_L, gamma) {
   C_avg <- (gamma * G * (1 - epsilon_L)) / (Q + Q_L)
@@ -205,37 +192,6 @@ model_107 <- function(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, V, t_g, T) {
   return(model_105(G, Q_instead, Q_L, epsilon_L, V, t_g, T))
 }
 
-
-T <- 60   # Total time (minutes)
-t_g <- 15 # Time of generation (minutes)
-G <- 100  # mg/min
-Q <- 20   # m^3/min
-Q_L <- 5  # m^3/min
-epsilon_L <- 0.5  # Efficiency of local exhaust
-epsilon_L_F <- 0.75  # Efficiency of local exhaust filtration
-Q_R <- 5  # m^3/min
-epsilon_RF <- 0.9  # Efficiency of recirculation filtration
-V <- 100  # m^3
-gamma <- 0.25 
-
-
-# Monte Carlo
-
-G_range <- c(60, 150)
-Q_range <- c(10, 30)
-Q_L_range <- c(2, 8)
-epsilon_L_range <- c(0.2, 0.8)
-epsilon_L_F_range <- c(0.5, 0.95)
-Q_R_range <- c(2, 10)
-epsilon_RF_range <- c(0.5, 0.95)
-V_range <- c(60, 150)
-t_g_range <- c(5, 30)
-T <- 60
-gamma_range <- t_g_range / T
-
-
-# simulation times
-n_simulations <- 1000
 
 results_105 <- vector("list", n_simulations)
 results_107 <- vector("list", n_simulations)
@@ -343,37 +299,6 @@ model_111 <- function(G, Q, Q_L, epsilon_L, epsilon_L_F, Q_R, epsilon_RF, V, t_g
   return(model_109(G, Q_instead, Q_L, epsilon_L, epsilon_L_F, V, t_g, T))
 }
 
-
-T <- 60   # Total time (minutes)
-t_g <- 15 # Time of generation (minutes)
-G <- 100  # mg/min
-Q <- 20   # m^3/min
-Q_L <- 5  # m^3/min
-epsilon_L <- 0.5  # Efficiency of local exhaust
-epsilon_L_F <- 0.75  # Efficiency of local exhaust filtration
-Q_R <- 5  # m^3/min
-epsilon_RF <- 0.9  # Efficiency of recirculation filtration
-V <- 100  # m^3
-gamma <- 0.25 
-
-                                
-# Monte Carlo
-
-G_range <- c(60, 150)
-Q_range <- c(10, 30)
-Q_L_range <- c(2, 8)
-epsilon_L_range <- c(0.2, 0.8)
-epsilon_L_F_range <- c(0.5, 0.95)
-Q_R_range <- c(2, 10)
-epsilon_RF_range <- c(0.5, 0.95)
-V_range <- c(60, 150)
-t_g_range <- c(5, 30)
-T <- 60
-gamma_range <- t_g_range / T
-
-
-# simulation times
-n_simulations <- 1000
                                 
 results_109 <- vector("list", n_simulations)
 results_111 <- vector("list", n_simulations)
@@ -408,6 +333,7 @@ df_111 <- do.call(rbind, lapply(results_111, function(x) data.frame(Time = x$tim
 average_109 <- average_and_ci(df_109, n_simulations)
 average_111 <- average_and_ci(df_111, n_simulations)
 
+                                
 # Plotting with ggplot
 ggplot() +
     geom_ribbon(data = average_109, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "red", alpha = 0.2) +
@@ -419,9 +345,7 @@ ggplot() +
          y = "Concentration (mg/m^3)") +
     theme_minimal()
 
-                                
-                                
-
+                                                              
 # Overall comparison
 average_101$Model <- "Model 101"
 average_103$Model <- "Model 103"
