@@ -442,20 +442,15 @@ ggplot(combined_averages, aes(x = Time, y = Concentration, color = Model)) +
 
  # Or
 
- ggplot() +
-    geom_ribbon(data = average_101, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "red", alpha = 0.2) +
-    geom_line(data = average_101, aes(x = Time, y = Concentration), color = "red") +
-    geom_ribbon(data = average_103, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "blue", alpha = 0.2) +
-    geom_line(data = average_103, aes(x = Time, y = Concentration), color = "blue") +
-    geom_ribbon(data = average_105, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "yellow", alpha = 0.2) +
-    geom_line(data = average_105, aes(x = Time, y = Concentration), color = "yellow") +
-    geom_ribbon(data = average_107, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "green", alpha = 0.2) +
-    geom_line(data = average_107, aes(x = Time, y = Concentration), color = "green") +
-    geom_ribbon(data = average_109, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "purple", alpha = 0.2) +
-    geom_line(data = average_109, aes(x = Time, y = Concentration), color = "purple") +
-    geom_ribbon(data = average_111, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "pink", alpha = 0.2) +
-    geom_line(data = average_111, aes(x = Time, y = Concentration), color = "pink") +
+ggplot(combined_averages, aes(x = Time, y = Concentration, group = Model)) +
+    geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper, fill = Model), alpha = 0.2) +
+    geom_line(aes(color = Model)) +
+    scale_fill_manual(values = c("Model 101" = "red", "Model 103" = "blue", "Model 105" = "yellow", 
+                                "Model 107" = "green", "Model 109" = "purple", "Model 111" = "pink")) +
+    scale_color_manual(values = c("Model 101" = "red", "Model 103" = "blue", "Model 105" = "yellow", 
+                                "Model 107" = "green", "Model 109" = "purple", "Model 111" = "pink")) +
     labs(title = "Overall Model Comparison with Monte Carlo Simulation",
-         x = "Time (minutes)",
+         x = "Time (minutes)", 
          y = "Concentration (mg/m^3)") +
-    theme_minimal()                               
+    theme_minimal() +
+    guides(fill = guide_legend(title = "Model"), color = guide_legend(title = "Model"))          
