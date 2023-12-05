@@ -123,8 +123,10 @@ for (i in 1:n_simulations) {
 }
 
 # Transfer to data.frame
-df_101 <- do.call(rbind, lapply(results_101, function(x) data.frame(Time = x$time, Concentration = c(x$concentration_rise, x$concentration_decay))))
-df_103 <- do.call(rbind, lapply(results_103, function(x) data.frame(Time = x$time, Concentration = c(x$concentration_rise, x$concentration_decay))))
+df_101 <- do.call(rbind, lapply(results_101, function(x) data.frame(Time = x$time, 
+                                                                    Concentration = c(x$concentration_rise, x$concentration_decay))))
+df_103 <- do.call(rbind, lapply(results_103, function(x) data.frame(Time = x$time, 
+                                                                    Concentration = c(x$concentration_rise, x$concentration_decay))))
 
                                 
 average_and_ci <- function(df, n) {
@@ -259,10 +261,10 @@ for (i in 1:n_simulations) {
 
 # Transfer to data.frame
 df_105 <- do.call(rbind, lapply(results_105, function(x) data.frame(Time = x$time, 
-Concentration = c(x$concentration_rise, x$concentration_decay))))
+                                                                    Concentration = c(x$concentration_rise, x$concentration_decay))))
 
 df_107 <- do.call(rbind, lapply(results_107, function(x) data.frame(Time = x$time, 
-Concentration = c(x$concentration_rise, x$concentration_decay))))
+                                                                    Concentration = c(x$concentration_rise, x$concentration_decay))))
 
                                 
 average_and_ci <- function(df, n) {
@@ -287,3 +289,153 @@ ggplot() +
          y = "Concentration (mg/m^3)") +
     theme_minimal()
 
+
+                                
+# Define Model 108
+model_108 <- function(G, Q, Q_L, epsilon_L, epsilon_L_F, gamma) {
+  C_avg <- (gamma * G * (1 - epsilon_L * epsilon_L_F)) / (Q + epsilon_L_F * Q_L)
+  C_LE <- C_avg + (epsilon_L * gamma * G) / Q_L
+  C_LF <- C_LE * (1 - epsilon_L_F)
+  return(list(C_avg = C_avg, C_LE = C_LE, C_LF = C_LF))
+}
+
+
+# Define Model 109
+model_109 <- function(G, Q, Q_L, epsilon_L, epsilon_L_F, V, t_g, T) {
+  # Create a time vector
+  time_vector <- seq(0, T, by = 1)
+  
+  C_rise <- sapply(time_vector, function(t) {
+    if (t <= t_g) {
+      return(((G * (1 - epsilon_L * epsilon_L_F)) / (Q + epsilon_L_F * Q_L)) * (1 - exp((-(Q + epsilon_L_F * Q_L) * t) / V)))
+    } else {
+      return(NA)
+    }
+  })
+  
+  C0 <- ((G * (1 - epsilon_L * epsilon_L_F)) / (Q + epsilon_L_F * Q_L)) * (1 - exp((-(Q + epsilon_L_F * Q_L) * t_g) / V))
+  
+  C_decay <- sapply(time_vector, function(t) {
+    if (t > t_g) {
+      return(C0 * exp((-(Q + epsilon_L_F * Q_L) * (t - t_g)) / V))
+    } else {
+      return(NA)
+    }
+  })
+  
+  return(list(time = time_vector, concentration_rise = C_rise, concentration_decay = C_decay))
+}
+
+
+# Define Model 110
+model_110 <- function(G, Q, Q_L, epsilon_L, epsilon_L_F, Q_R, epsilon_RF, gamma) {
+  C_avg <- (gamma * G * (1 - epsilon_L * epsilon_L_F)) / ((Q + epsilon_RF * Q_R) + epsilon_L_F * Q_L)
+  C_LE <- C_avg + (epsilon_L * gamma * G) / Q_L
+  C_LF <- C_LE * (1 - epsilon_L_F)
+  C_RF <- C_avg * (1 - epsilon_RF)
+  return(list(C_avg = C_avg, C_LE = C_LE, C_LF = C_LF, C_RF = C_RF))
+}
+
+
+# Define Model 111
+model_111 <- function(G, Q, Q_L, epsilon_L, epsilon_L_F, Q_R, epsilon_RF, V, t_g, T) {
+  Q_instead <- Q + epsilon_RF * Q_R
+  return(model_109(G, Q_instead, Q_L, epsilon_L, epsilon_L_F, V, t_g, T))
+}
+
+
+T <- 60   # Total time (minutes)
+t_g <- 15 # Time of generation (minutes)
+G <- 100  # mg/min
+Q <- 20   # m^3/min
+Q_L <- 5  # m^3/min
+epsilon_L <- 0.5  # Efficiency of local exhaust
+epsilon_L_F <- 0.75  # Efficiency of local exhaust filtration
+Q_R <- 5  # m^3/min
+epsilon_RF <- 0.9  # Efficiency of recirculation filtration
+V <- 100  # m^3
+gamma <- 0.25 
+
+                                
+# Monte Carlo
+
+G_range <- c(60, 150)
+Q_range <- c(10, 30)
+Q_L_range <- c(2, 8)
+epsilon_L_range <- c(0.2, 0.8)
+epsilon_L_F_range <- c(0.5, 0.95)
+Q_R_range <- c(2, 10)
+epsilon_RF_range <- c(0.5, 0.95)
+V_range <- c(60, 150)
+t_g_range <- c(5, 30)
+T <- 60
+gamma_range <- t_g_range / T
+
+
+# simulation times
+n_simulations <- 1000
+                                
+results_109 <- vector("list", n_simulations)
+results_111 <- vector("list", n_simulations)
+
+set.seed(123)
+for (i in 1:n_simulations) {
+    # Randomly selection
+    G <- runif(1, G_range[1], G_range[2])
+    Q <- runif(1, Q_range[1], Q_range[2])
+    Q_L <- runif(1, Q_L_range[1], Q_L_range[2])
+    epsilon_L <- runif(1, epsilon_L_range[1], epsilon_L_range[2])
+    epsilon_L_F <- runif(1, epsilon_L_F_range[1], epsilon_L_F_range[2])
+    Q_R <- runif(1, Q_R_range[1], Q_R_range[2])
+    V <- runif(1, V_range[1], V_range[2])
+    t_g <- runif(1, t_g_range[1], t_g_range[2])
+    gamma <- runif(1, gamma_range[1], gamma_range[2])
+    epsilon_RF <- runif(1, epsilon_RF_range[1], epsilon_RF_range[2])
+
+    results_109[[i]] <- model_109(G, Q, Q_L, epsilon_L, epsilon_L_F, V, t_g, T)
+    results_111[[i]] <- model_111(G, Q, Q_L, epsilon_L, epsilon_L_F, Q_R, epsilon_RF, V, t_g, T)
+}
+
+
+# Transfer to data.frame
+df_109 <- do.call(rbind, lapply(results_109, function(x) data.frame(Time = x$time, 
+                                                                    Concentration = c(x$concentration_rise, x$concentration_decay))))
+
+df_111 <- do.call(rbind, lapply(results_111, function(x) data.frame(Time = x$time, 
+                                                                    Concentration = c(x$concentration_rise, x$concentration_decay))))
+
+# Calculate Average and Confidence Interval
+average_109 <- average_and_ci(df_109, n_simulations)
+average_111 <- average_and_ci(df_111, n_simulations)
+
+# Plotting with ggplot
+ggplot() +
+    geom_ribbon(data = average_109, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "red", alpha = 0.2) +
+    geom_line(data = average_109, aes(x = Time, y = Concentration), color = "red") +
+    geom_ribbon(data = average_111, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "blue", alpha = 0.2) +
+    geom_line(data = average_111, aes(x = Time, y = Concentration), color = "blue") +
+    labs(title = "Model 109 vs 111 with Monte Carlo Simulation",
+         x = "Time (minutes)", 
+         y = "Concentration (mg/m^3)") +
+    theme_minimal()
+
+                                
+                                
+
+# Overall comparison
+average101$Model <- "Model 101"
+average103$Model <- "Model 103"
+average105$Model <- "Model 105"
+average107$Model <- "Model 107"
+average109$Model <- "Model 109"
+average111$Model <- "Model 111"
+
+combined_averages <- rbind(average101, average103, average105, average107, average109, average111)
+
+ggplot(combined_averages, aes(x = Time, y = Concentration, color = Model)) +
+    geom_line() +
+    geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper, fill = Model), alpha = 0.2) +
+    labs(title = "Overall Model Comparison with Monte Carlo Simulation",
+         x = "Time (minutes)", 
+         y = "Concentration (mg/m^3)") +
+    theme_minimal()                          
