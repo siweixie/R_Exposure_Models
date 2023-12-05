@@ -138,7 +138,6 @@ average_and_ci <- function(df, n) {
 average_101 <- average_and_ci(df_101, n_simulations)
 average_103 <- average_and_ci(df_103, n_simulations)
 
-# 绘制平均曲线和置信区间
 ggplot() +
     geom_ribbon(data = average_101, aes(x = Time, ymin = CI_lower, ymax = CI_upper), fill = "red", alpha = 0.2) +
     geom_line(data = average_101, aes(x = Time, y = Concentration), color = "red") +
@@ -287,5 +286,4 @@ ggplot() +
          x = "Time (minutes)", 
          y = "Concentration (mg/m^3)") +
     theme_minimal()
-  theme_minimal()
 
