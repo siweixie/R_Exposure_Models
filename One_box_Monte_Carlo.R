@@ -433,8 +433,8 @@ average_111$Model <- "Model 111"
 combined_averages <- rbind(average_101, average_103, average_105, average_107, average_109, average_111)
 
 ggplot(combined_averages, aes(x = Time, y = Concentration, color = Model)) +
-    geom_line() +
     geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper, fill = Model), alpha = 0.2) +
+    geom_line() +
     labs(title = "Overall Model Comparison with Monte Carlo Simulation",
          x = "Time (minutes)", 
          y = "Concentration (mg/m^3)") +
