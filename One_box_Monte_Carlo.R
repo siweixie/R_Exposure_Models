@@ -70,11 +70,6 @@ results_103 <- model_103(G, Q, Q_R, epsilon_RF, V, t_g, T)
 
 #Visualization
 library(ggplot2)
-C_bar_1 <- results_102$C_bar
-
-results_103_df <- data.frame(Time = results_103$time, 
-                             Concentration = c(results_103$concentration_rise, results_103$concentration_decay))
-results_103_df <- results_103_df[!is.na(results_103_df$Concentration), ]
 
 # Monte Carlo
 
