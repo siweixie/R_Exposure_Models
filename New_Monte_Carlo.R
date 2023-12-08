@@ -67,7 +67,7 @@ set.seed(123)
 
 for (i in 1:n_simulations) {
 
-    G <- rlnorm(1, log(26000 / sqrt(2)), sqrt(log(2)))
+    G <- rlnorm(1, log(26000), sqrt(log(2)))
     
 
     Q <- rnorm(1, 205, 6.2)
