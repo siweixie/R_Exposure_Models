@@ -90,7 +90,7 @@ for (i in 1:n_simulations) {
     V <- 975  
     t_g <- 120  
     T <- 480  
-    Q_R <- 20 + rnorm(1, 0, 0.6)  
+    Q_R <- rnorm(1, 200, 6)  
     
     results_101[[i]] <- model_101(G, Q, V, t_g, T)
     results_103[[i]] <- model_103(G, Q, Q_R, epsilon_RF, V, t_g, T)
@@ -206,7 +206,7 @@ for (i in 1:n_simulations) {
     V <- 975  
     t_g <- 120  
     T <- 480  
-    Q_R <- 20 + rnorm(1, 0, 0.6)  
+    Q_R <- rnorm(1, 200, 6)  
     
     results_105[[i]] <- model_105(G, Q, Q_L, epsilon_L, V, t_g, T)
     results_107[[i]] <- model_107(G, Q, Q_L, epsilon_L, Q_R, epsilon_RF, V, t_g, T)
@@ -327,7 +327,7 @@ for (i in 1:n_simulations) {
     V <- 975  
     t_g <- 120  
     T <- 480  
-    Q_R <- 20 + rnorm(1, 0, 0.6)  
+    Q_R <- rnorm(1, 200, 6)  
     
     results_109[[i]] <- model_109(G, Q, Q_L, epsilon_L, epsilon_L_F, V, t_g, T)
     results_111[[i]] <- model_111(G, Q, Q_L, epsilon_L, epsilon_L_F, Q_R, epsilon_RF, V, t_g, T)
