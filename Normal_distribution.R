@@ -3,7 +3,6 @@ library(ggplot2)
 set.seed(123)
 
 G_values <- rlnorm(1000, log(26000), sqrt(log(2)))
-
 Q_values <- rnorm(1000, 205, 6.2)
 Q_L_values <- rnorm(1000, 25, 0.75)
 
@@ -17,7 +16,6 @@ eRF_max <- 0.5 + (1.96 * 0.9)
 epsilon_L_values <- runif(1000, eL_min, eL_max)
 epsilon_L_F_values <- runif(1000, eLF_min, eLF_max)
 epsilon_RF_values <- runif(1000, eRF_min, eRF_max)
-
 QR_values <- rnorm(1000, 20, 0.6)
 
 p1 <- ggplot(data.frame(G = G_values), aes(x = G)) +
